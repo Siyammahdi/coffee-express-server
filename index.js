@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -9,15 +9,11 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-
 //CoffeeExpress
 //Vo2Do5rpHeWoT7FN
 
 console.log(process.env.DB_USER);
 console.log(process.env.DB_PASS);
-
-
-
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bocayyh.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -45,10 +41,25 @@ async function run() {
             res.send(result)
         })
 
+        app.get("/coffee/:id", async(req, res) => {
+            const id = req.params.id;
+            const query ={_id: new ObjectId(id)}
+            const result = await coffeeCollection.findOne(query);
+            res.send(result)
+        })
+
         app.post("/coffee", async(req, res) => {
             const newCoffee = req.body;
             console.log(newCoffee);
             const result = await coffeeCollection.insertOne(newCoffee);
+            res.send(result);
+        })
+
+
+        app.delete("/coffee/:id", async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id) }
+            const result = await coffeeCollection.deleteOne(query);
             res.send(result);
         })
         
