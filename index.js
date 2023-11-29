@@ -9,8 +9,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-//CoffeeExpress
-//Vo2Do5rpHeWoT7FN
 
 console.log(process.env.DB_USER);
 console.log(process.env.DB_PASS);
@@ -43,7 +41,7 @@ async function run() {
 
         app.get("/coffee/:id", async(req, res) => {
             const id = req.params.id;
-            const query ={_id: new ObjectId(id)}
+            const query = {_id: new ObjectId(id)};
             const result = await coffeeCollection.findOne(query);
             res.send(result)
         })
@@ -55,6 +53,16 @@ async function run() {
             res.send(result);
         })
 
+        app.put("/coffee/:id", async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const updateCoffee = req.body;
+            const updateOperation = {
+                $set: updateCoffee
+            };
+            const result = await coffeeCollection.updateOne(query, updateOperation);
+            res.send(result)
+        })
 
         app.delete("/coffee/:id", async(req, res) => {
             const id = req.params.id;
